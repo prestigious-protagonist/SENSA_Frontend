@@ -12,7 +12,8 @@ const Page = () => {
   const router = useRouter();
   const { getToken, isLoaded } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [isNewAccount, setIsNewAccount] = useState(true);
+  // use null to indicate "not checked yet"
+  const [isNewAccount, setIsNewAccount] = useState<boolean | null>(null);
 
   async function checkIfNewAccount(): Promise<boolean> {
     setIsLoading(true);
@@ -27,14 +28,16 @@ const Page = () => {
         }
       );
       if (result.status === 202) {
-        setIsNewAccount(false);
+        setIsNewAccount(false); // existing user
         return false;
       }
+      // If status not 202, treat as new account
     } catch (error: unknown) {
       console.log(error);
     } finally {
       setIsLoading(false);
     }
+    setIsNewAccount(true); // new user by default
     return true;
   }
 
@@ -48,13 +51,16 @@ const Page = () => {
         router.push("/profile");
       }
     };
-    if (isLoaded) {
+    if (isLoaded && isNewAccount === null) {
       handleCheck();
     }
-  }, [isLoaded]);
+  }, [isLoaded, isNewAccount]);
 
-  if (!isLoaded || isLoading || isNewAccount) return <CustomLoader />;
+  // Show loader while auth or check in progress
+  if (!isLoaded || isLoading || isNewAccount === null) return <CustomLoader />;
 
+  // If user is new, the redirect will happen, so here we just render
+  // existing user feed
   return (
     <Suspense fallback={<CustomLoader />}>
       <FeedSection />
