@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { ChatApp } from "../components/chatApp";
 import { useAuth } from "@clerk/nextjs";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { CustomLoader } from "@/components/customLoader"; // or your loader component
 
-const Page = () => {
+const PageContent = () => {
   const { getToken } = useAuth();
   const searchParams = useSearchParams();
   const user = useSelector((state: any) => state.user);
@@ -52,6 +53,14 @@ const Page = () => {
       otherUserId={otherUserId || ""}
       authToken={authToken || ""}
     />
+  );
+};
+
+const Page = () => {
+  return (
+    <Suspense fallback={<CustomLoader />}>
+      <PageContent />
+    </Suspense>
   );
 };
 
