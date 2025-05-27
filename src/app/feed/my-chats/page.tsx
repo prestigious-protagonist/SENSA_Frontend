@@ -6,7 +6,7 @@ import { useAuth } from "@clerk/nextjs";
 import { useSelector } from "react-redux";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { CustomLoader } from "@/components/customLoader"; // or your loader component
+import { CustomLoader } from "../components/customLoader"; // or your loader component
 
 const PageContent = () => {
   const { getToken } = useAuth();
