@@ -1,9 +1,10 @@
 "use client";
+
 import axios from "axios";
 import { toast } from "sonner";
 import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { FeedSection } from "./components/feedSection";
 import { CustomLoader } from "./components/customLoader";
 
@@ -54,7 +55,11 @@ const Page = () => {
 
   if (!isLoaded || isLoading || isNewAccount) return <CustomLoader />;
 
-  return <FeedSection />;
+  return (
+    <Suspense fallback={<CustomLoader />}>
+      <FeedSection />
+    </Suspense>
+  );
 };
 
 export default Page;
